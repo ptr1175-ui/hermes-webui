@@ -52,6 +52,7 @@ const LOCALES = {
     selected_text_reply: 'Reply with selection',
     selected_text_reply_title: 'Append selected chat text as quoted context',
     selected_text_reply_appended: 'Selected text added to composer',
+    saved_prompts_rename: 'Rename',
     saved_prompts_empty: 'No saved prompts yet.',
     saved_prompts_save_current: 'Save current input as prompt',
     saved_prompts_saved: 'Prompt saved',

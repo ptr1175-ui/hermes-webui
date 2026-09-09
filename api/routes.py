@@ -16639,6 +16639,26 @@ def handle_put(handler, parsed) -> bool:
     if parsed.path.startswith("/api/mcp/servers/"):
         name = parsed.path[len("/api/mcp/servers/"):]
         return _handle_mcp_server_update(handler, name, body)
+    if parsed.path == "/api/prompts":
+        pid = str(body.get("id") or "").strip()
+        label = str(body.get("label") or "").strip()
+        if not pid:
+            return bad(handler, "id is required")
+        if not label:
+            return bad(handler, "label is required")
+        if len(label) > 100:
+            return bad(handler, "label too long (max 100 chars)")
+        prompts = _load_saved_prompts()
+        found = False
+        for p in prompts:
+            if p.get("id") == pid:
+                p["label"] = label
+                found = True
+                break
+        if not found:
+            return bad(handler, "prompt not found", status=404)
+        _save_saved_prompts(prompts)
+        return j(handler, {"ok": True})
     return False
 
 # ── GET route helpers ─────────────────────────────────────────────────────────

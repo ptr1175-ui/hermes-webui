@@ -843,16 +843,52 @@ async function toggleSavedPromptsPopup(){
       label.className='saved-prompt-label';
       label.textContent=p.label||p.text;
       label.title=p.text;
-      row.onclick=()=>{
-        insertSavedPromptIntoComposer(p.text);
-        popup.style.display='none';
-        if(btn)btn.setAttribute('aria-expanded','false');
-      };
+      const rename=document.createElement('button');
+      rename.className='saved-prompt-rename';
+      rename.type='button';
+      rename.title=(typeof t==='function'&&t('saved_prompts_rename'))||'Rename';
+      rename.innerHTML='<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>';
       const del=document.createElement('button');
       del.className='saved-prompt-delete';
       del.type='button';
       del.title=(typeof t==='function'&&t('saved_prompts_delete'))||'Delete';
       del.innerHTML='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+      row.onclick=()=>{
+        insertSavedPromptIntoComposer(p.text);
+        popup.style.display='none';
+        if(btn)btn.setAttribute('aria-expanded','false');
+      };
+      rename.onclick=(e)=>{
+        e.stopPropagation();
+        const input=document.createElement('input');
+        input.type='text';
+        input.className='saved-prompt-rename-input';
+        input.value=p.label||p.text;
+        input.maxLength=100;
+        label.style.display='none';
+        rename.style.display='none';
+        del.style.display='none';
+        row.insertBefore(input,label);
+        input.focus();
+        input.select();
+        const done=()=>{
+          const val=input.value.trim();
+          if(val&&val!==(p.label||p.text)){
+            api('/api/prompts',{method:'PUT',body:JSON.stringify({id:p.id,label:val})}).then(()=>{
+              p.label=val;label.textContent=val;
+            }).catch(()=>{});
+          }
+          input.remove();
+          label.style.display='';
+          rename.style.display='';
+          del.style.display='';
+        };
+        input.addEventListener('keydown',(ev)=>{
+          if(ev.key==='Enter'){ev.preventDefault();done();}
+          if(ev.key==='Escape'){ev.preventDefault();input.remove();label.style.display='';rename.style.display='';del.style.display='';}
+        });
+        input.addEventListener('blur',()=>setTimeout(done,150));
+      };
       del.onclick=async(e)=>{
         e.stopPropagation();
         try{await api('/api/prompts',{method:'DELETE',body:JSON.stringify({id:p.id})});}catch(_e){}
@@ -861,6 +897,7 @@ async function toggleSavedPromptsPopup(){
         await toggleSavedPromptsPopup();
       };
       row.appendChild(label);
+      row.appendChild(rename);
       row.appendChild(del);
       popup.appendChild(row);
     }
