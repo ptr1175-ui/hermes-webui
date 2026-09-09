@@ -848,6 +848,11 @@ async function toggleSavedPromptsPopup(){
       rename.type='button';
       rename.title=(typeof t==='function'&&t('saved_prompts_rename'))||'Rename';
       rename.innerHTML='<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>';
+      const editBtn=document.createElement('button');
+      editBtn.className='saved-prompt-rename';
+      editBtn.type='button';
+      editBtn.title=(typeof t==='function'&&t('saved_prompts_edit'))||'Edit';
+      editBtn.innerHTML='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg>';
       const del=document.createElement('button');
       del.className='saved-prompt-delete';
       del.type='button';
@@ -889,8 +894,61 @@ async function toggleSavedPromptsPopup(){
         });
         input.addEventListener('blur',()=>setTimeout(done,150));
       };
+      editBtn.onclick=(e)=>{
+        e.stopPropagation();
+        const overlay=document.createElement('div');
+        overlay.className='saved-prompt-edit-overlay';
+        const modal=document.createElement('div');
+        modal.className='saved-prompt-edit-modal';
+        modal.innerHTML='<h3>'+(typeof t==='function'&&t('saved_prompts_edit_title')||'Edit prompt text')+'</h3>';
+        const textarea=document.createElement('textarea');
+        textarea.value=p.text;
+        modal.appendChild(textarea);
+        const actions=document.createElement('div');
+        actions.className='saved-prompt-edit-actions';
+        const cancelBtn=document.createElement('button');
+        cancelBtn.className='saved-prompt-edit-cancel';
+        cancelBtn.textContent=(typeof t==='function'&&t('saved_prompts_edit_cancel')||'Cancel');
+        const saveBtn=document.createElement('button');
+        saveBtn.className='saved-prompt-edit-save';
+        saveBtn.textContent=(typeof t==='function'&&t('saved_prompts_edit_save')||'Save');
+        actions.appendChild(cancelBtn);
+        actions.appendChild(saveBtn);
+        modal.appendChild(actions);
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
+        textarea.focus();
+        const close=()=>{overlay.remove();};
+        cancelBtn.onclick=close;
+        overlay.onclick=(ev)=>{if(ev.target===overlay)close();};
+        textarea.addEventListener('keydown',(ev)=>{
+          if(ev.key==='Escape'&&!ev.shiftKey){ev.preventDefault();close();}
+          if(ev.key==='Enter'&&ev.ctrlKey){ev.preventDefault();saveBtn.click();}
+        });
+        saveBtn.onclick=async()=>{
+          const newText=textarea.value.trim();
+          if(!newText){if(typeof showToast==='function')showToast('Prompt text cannot be empty',2000,'error');return;}
+          if(newText===p.text){close();return;}
+          try{
+            await api('/api/prompts',{method:'PUT',body:JSON.stringify({id:p.id,text:newText})});
+            p.text=newText;
+            const newLabel=newText.slice(0,60);
+            p.label=newLabel;
+            label.textContent=newLabel;
+            label.title=newText;
+            _savedPromptsCache=null;
+            close();
+            if(typeof showToast==='function')showToast('Prompt updated',1600);
+          }catch(_e){
+            if(typeof showToast==='function')showToast(_e&&_e.message||'Failed to update prompt',2000,'error');
+          }
+        };
+      };
       del.onclick=async(e)=>{
         e.stopPropagation();
+        const name=(p.label||p.text).slice(0,40);
+        const msg=(typeof t==='function'&&t('saved_prompts_delete_confirm_msg')||'This will permanently delete "{name}".').replace('{name}',name);
+        if(!confirm(msg))return;
         try{await api('/api/prompts',{method:'DELETE',body:JSON.stringify({id:p.id})});}catch(_e){}
         _savedPromptsCache=null;
         await toggleSavedPromptsPopup();
@@ -898,6 +956,7 @@ async function toggleSavedPromptsPopup(){
       };
       row.appendChild(label);
       row.appendChild(rename);
+      row.appendChild(editBtn);
       row.appendChild(del);
       popup.appendChild(row);
     }

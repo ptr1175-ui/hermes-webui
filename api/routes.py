@@ -16642,17 +16642,25 @@ def handle_put(handler, parsed) -> bool:
     if parsed.path == "/api/prompts":
         pid = str(body.get("id") or "").strip()
         label = str(body.get("label") or "").strip()
+        text = str(body.get("text") or "").strip()
         if not pid:
             return bad(handler, "id is required")
-        if not label:
-            return bad(handler, "label is required")
-        if len(label) > 100:
+        if not label and not text:
+            return bad(handler, "label or text is required")
+        if label and len(label) > 100:
             return bad(handler, "label too long (max 100 chars)")
+        if text and len(text) > 8000:
+            return bad(handler, "text too long (max 8000 chars)")
         prompts = _load_saved_prompts()
         found = False
         for p in prompts:
             if p.get("id") == pid:
-                p["label"] = label
+                if label:
+                    p["label"] = label
+                if text:
+                    p["text"] = text
+                    if not label:
+                        p["label"] = text[:60]
                 found = True
                 break
         if not found:
