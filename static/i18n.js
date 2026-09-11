@@ -632,6 +632,8 @@ const LOCALES = {
     session_batch_delete_worktree_confirm: 'Delete {0} conversations? {1} worktree-backed conversation(s) will leave their worktree directories on disk.',
     session_batch_archive_worktree_confirm: 'Archive {0} conversations? {1} worktree-backed conversation(s) will keep their worktree directories on disk.',
     session_no_selection: 'No conversations selected',
+    session_collapse_all: 'Collapse all',
+    session_expand_all: 'Expand all',
     // settings panel
     settings_heading_title: 'Control Center',
     settings_heading_subtitle: 'Preferences, conversation tools, and system controls.',

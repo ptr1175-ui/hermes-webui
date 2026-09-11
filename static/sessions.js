@@ -7849,6 +7849,17 @@ function renderSessionListFromCache(){
   list.dataset.sessionVirtualFilter=q;
   list.dataset.sessionVirtualStart=String(virtualWindow.start);
   list.dataset.sessionVirtualEnd=String(virtualWindow.end);
+  // Collapse/expand all toggle
+  const allCollapsed=groups.length>0&&groups.every(g=>_groupCollapsed[g.label]);
+  const toggleCollapseAll=document.createElement('div');
+  toggleCollapseAll.className='session-collapse-all-toggle';
+  toggleCollapseAll.textContent=allCollapsed?t('session_expand_all','Expand all'):t('session_collapse_all','Collapse all');
+  toggleCollapseAll.onclick=()=>{
+    for(const g of groups) _groupCollapsed[g.label]=!allCollapsed;
+    _saveCollapsed();
+    renderSessionListFromCache();
+  };
+  list.appendChild(toggleCollapseAll);
   // Render groups with collapsible headers. Large sidebars render only the
   // current session-row window plus top/bottom spacers inside each group body;
   // headers remain real DOM so pin/archive/date grouping and clicks survive.
