@@ -7346,7 +7346,7 @@ function renderMd(raw){
     t=t.replace(/\x00C(\d+)\x00/g,(_,i)=>_code_stash[+i]);
     // Stash [label](url) links before autolink so the URL in href= is not re-linked
     const _link_stash=[];
-    t=t.replace(/\[([^\]]+)\]\(((?:https?:\/\/|file:\/\/|workspace:\/\/|session:\/\/|mailto:|tel:|message:)[^\s\)]+)\)/g,(_,lb,u)=>{_link_stash.push(_markdownAnchor(lb,u));return `\x00L${_link_stash.length-1}\x00`;});
+    t=t.replace(/\[([^\]]+)\]\(((?:https?:\/\/|file:\/\/|workspace:\/\/|session:\/\/|mailto:|tel:|message:)[^\s\)]+|(?:[a-zA-Z0-9_./-]+(?:\.[a-zA-Z0-9]+|[./]|\\.[a-zA-Z0-9]+)))/g,(_,lb,u)=>{_link_stash.push(_markdownAnchor(lb,u));return `\x00L${_link_stash.length-1}\x00`;});
     t=t.replace(/(https?:\/\/[^\s<>"')\]]+)/g,(url)=>{const trail=url.match(/[.,;:!?)]$/)?url.slice(-1):'';const clean=trail?url.slice(0,-1):url;return `<a href="${clean}" target="_blank" rel="noopener">${esc(clean)}</a>${trail}`;});
     t=t.replace(/\x00L(\d+)\x00/g,(_,i)=>_link_stash[+i]);
     t=t.replace(/\x00G(\d+)\x00/g,(_,i)=>_img_stash[+i]);
@@ -7487,7 +7487,7 @@ function renderMd(raw){
   // Stash existing <a> tags first to avoid re-linking already-linked URLs.
   const _a_stash=[];
   s=s.replace(/(<a\b[^>]*>[\s\S]*?<\/a>)/g,m=>{_a_stash.push(m);return `\x00A${_a_stash.length-1}\x00`;});
-  s=s.replace(/\[([^\]]+)\]\(((?:https?:\/\/|file:\/\/|workspace:\/\/|session:\/\/|mailto:|tel:|message:)[^\s\)]+)\)/g,(_,label,url)=>_markdownAnchor(label,url));
+  s=s.replace(/\[([^\]]+)\]\(((?:https?:\/\/|file:\/\/|workspace:\/\/|session:\/\/|mailto:|tel:|message:)[^\s\)]+|(?:[a-zA-Z0-9_./-]+(?:\.[a-zA-Z0-9]+|[./]|\\.[a-zA-Z0-9]+)))\)/g,(_,label,url)=>_markdownAnchor(label,url));
   s=s.replace(/\x00A(\d+)\x00/g,(_,i)=>_a_stash[+i]);
   // Restore raw <pre> only after markdown rewrites so literal preformatted
   // content stays placeholder-protected, then let the sanitizer normalize tags.
@@ -7529,6 +7529,25 @@ function renderMd(raw){
         return 'api/media?path='+encodeURIComponent(path)+'&inline=1';
       }catch(_){
         return 'api/media?path='+encodeURIComponent(href.replace(/^file:\/\//i,''))+'&inline=1';
+      }
+    }
+    // Relative workspace path (e.g. assessments/foo.md) — map to #workspace=
+    // so the existing click handler opens the file in the workspace preview.
+    // Skips URLs with any scheme (https:, mailto:, tel:, etc.) and pure anchors.
+    if(!/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(href) && href!=='#' && !href.startsWith('#') && !href.includes('://')){
+      try{
+        // Resolve ../ segments relative to workspace root
+        let resolved = String(href);
+        const parts = resolved.split('/');
+        const out = [];
+        for(const p of parts){
+          if(p === '..') out.pop();  // go up one level
+          else if(p !== '.') out.push(p);
+        }
+        const rel = out.join('/');
+        return '#workspace='+encodeURIComponent(rel);
+      }catch(_){
+        return '#';
       }
     }
     return href;
