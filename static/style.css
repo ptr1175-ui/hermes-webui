@@ -6422,18 +6422,11 @@ main.main > #mainPlugin{display:none;}
 .composer-compact .composer-right{display:flex!important;gap:4px;}
 .composer-compact .composer-box{padding:4px 8px;border:none;background:transparent;box-shadow:none;display:flex;flex-direction:row;align-items:center;gap:6px;}
 .composer-compact #msg{border:1px solid var(--border);border-radius:8px;padding:6px 10px;background:var(--input-bg);font-size:13px;min-height:30px;flex:1;}
-.composer-compact .composer-footer .composer-right #btnComposerCollapse{display:inline-flex;}
-.composer-compact .composer-footer .composer-right #btnComposerCollapse svg{transform:rotate(180deg);}
 .composer-compact .send-btn{width:30px;height:30px;}
 
 /* Level 2: composer-hidden — hide everything, show edge toggle */
 .composer-hidden .composer-wrap{display:none!important;}
 .composer-hidden .composer-edge-toggle{display:inline-flex;opacity:1;pointer-events:auto;}
-
-/* Composer collapse button — chevron-up in composer-right */
-#btnComposerCollapse{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border:none;border-radius:8px;background:transparent;color:var(--muted);cursor:pointer;flex-shrink:0;transition:color .12s,background .12s;}
-#btnComposerCollapse:hover{color:var(--text);background:var(--hover-bg);}
-.composer-hidden #btnComposerCollapse{display:none!important;}
 
 @media(max-width:900px){
   .composer-edge-toggle{display:none!important;}

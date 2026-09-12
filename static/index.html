@@ -143,6 +143,11 @@
       <line x1="9" y1="3" x2="9" y2="21"/>
     </svg>
   </button>
+  <button class="app-titlebar-btn has-tooltip has-tooltip--bottom" id="btnComposerCollapse" onclick="toggleComposer()" type="button" aria-label="Toggle composer" data-i18n-title="composer_collapse" data-tooltip="Toggle composer (Ctrl+Shift+B)" title="Toggle composer (Ctrl+Shift+B)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="16" height="16">
+      <polyline points="18 15 12 9 6 15"/>
+    </svg>
+  </button>
   <button class="app-titlebar-new-chat" id="btnTitlebarNewChat" onclick="$('btnNewChat') && $('btnNewChat').click()" type="button" aria-label="New conversation" data-i18n-title="new_conversation" data-i18n-aria-label="new_conversation" title="New conversation">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="16" height="16">
       <line x1="12" y1="5" x2="12" y2="19"/>
@@ -729,9 +734,6 @@
               </div>
             </div>
             <span class="bg-badge" id="bgBadge" style="display:none" title="Background tasks running">0</span>
-            <button class="composer-collapse-btn has-tooltip has-tooltip--left" id="btnComposerCollapse" type="button" onclick="toggleComposer()" data-tooltip="Collapse composer" data-i18n-title="composer_collapse" aria-label="Collapse composer">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
-            </button>
             <button class="send-btn has-tooltip has-tooltip--left" id="btnSend" data-tooltip="Send message" data-i18n-title="composer_send" data-i18n-aria-label="composer_send" disabled>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
             </button>
