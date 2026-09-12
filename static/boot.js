@@ -522,6 +522,9 @@ function _isDesktopWidth(){
 function _isSidebarCollapsed(){
   return document.querySelector('.layout')?.classList.contains('sidebar-collapsed')||false;
 }
+function _isSidebarFullyCollapsed(){
+  return document.querySelector('.layout')?.classList.contains('rail-collapsed')||false;
+}
 
 function _syncSidebarAria(){
   // Mirror the open/collapsed state on the active rail button via aria-expanded
@@ -531,20 +534,74 @@ function _syncSidebarAria(){
 }
 
 function toggleSidebar(forceState){
-  if(!_isDesktopWidth())return; // mobile uses an overlay; never collapse there
+  if(!_isDesktopWidth())return;
   const layout=document.querySelector('.layout');
   if(!layout)return;
-  const next=typeof forceState==='boolean'?forceState:!_isSidebarCollapsed();
-  layout.classList.toggle('sidebar-collapsed',next);
-  // Clear the flash-prevention root-level marker once JS owns the state.
+  if(typeof forceState==='boolean'){
+    // forceState=false → full (open). forceState=true → panels-collapsed.
+    layout.classList.toggle('sidebar-collapsed',forceState);
+    layout.classList.remove('rail-collapsed');
+  }else{
+    // Cycle: full → panels-collapsed → fully-collapsed → full
+    if(layout.classList.contains('rail-collapsed')){
+      layout.classList.remove('sidebar-collapsed','rail-collapsed');
+    }else if(layout.classList.contains('sidebar-collapsed')){
+      layout.classList.add('rail-collapsed');
+    }else{
+      layout.classList.add('sidebar-collapsed');
+    }
+  }
   try{document.documentElement.removeAttribute('data-sidebar-collapsed');}catch(_){}
-  try{localStorage.setItem(_SIDEBAR_COLLAPSED_KEY,next?'1':'0');}catch(_){}
+  try{localStorage.setItem(_SIDEBAR_COLLAPSED_KEY,layout.classList.contains('sidebar-collapsed')?'1':'0');}catch(_){}
+  try{localStorage.setItem('hermes-webui-rail-collapsed',layout.classList.contains('rail-collapsed')?'1':'0');}catch(_){}
   _syncSidebarAria();
 }
 
 function expandSidebar(){
   if(_isSidebarCollapsed())toggleSidebar(false);
 }
+
+const _COMPOSER_COLLAPSED_KEY='hermes-webui-composer-collapsed';
+
+function _isComposerCompact(){
+  return document.querySelector('.layout')?.classList.contains('composer-compact')||false;
+}
+function _isComposerHidden(){
+  return document.querySelector('.layout')?.classList.contains('composer-hidden')||false;
+}
+
+function toggleComposer(forceState){
+  const layout=document.querySelector('.layout');
+  if(!layout)return;
+  if(forceState==='hidden'){
+    layout.classList.add('composer-hidden');
+    layout.classList.remove('composer-compact');
+  }else if(forceState==='compact'){
+    layout.classList.add('composer-compact');
+    layout.classList.remove('composer-hidden');
+  }else if(typeof forceState==='boolean'){
+    layout.classList.toggle('composer-compact',forceState);
+    layout.classList.remove('composer-hidden');
+  }else{
+    if(layout.classList.contains('composer-hidden')){
+      layout.classList.remove('composer-compact','composer-hidden');
+    }else if(layout.classList.contains('composer-compact')){
+      layout.classList.add('composer-hidden');
+    }else{
+      layout.classList.add('composer-compact');
+    }
+  }
+  try{localStorage.setItem(_COMPOSER_COLLAPSED_KEY,layout.classList.contains('composer-hidden')?'2':layout.classList.contains('composer-compact')?'1':'0');}catch(_){}
+  if(typeof updateSendBtn==='function')updateSendBtn();
+}
+
+(function _restoreComposerState(){
+  try{
+    const v=localStorage.getItem(_COMPOSER_COLLAPSED_KEY);
+    if(v==='2')toggleComposer('hidden');
+    else if(v==='1')toggleComposer('compact');
+  }catch(_){}
+})();
 
 // Boot-time restore. The inline flash-prevention script in index.html already
 // set data-sidebar-collapsed='1' on <html> before the stylesheet so the page
@@ -556,7 +613,12 @@ function expandSidebar(){
   try{
     if(localStorage.getItem(_SIDEBAR_COLLAPSED_KEY)==='1'){
       const layout=document.querySelector('.layout');
-      if(layout)layout.classList.add('sidebar-collapsed');
+      if(layout){
+        layout.classList.add('sidebar-collapsed');
+        if(localStorage.getItem('hermes-webui-rail-collapsed')==='1'){
+          layout.classList.add('rail-collapsed');
+        }
+      }
     }
   }catch(_){}
   _syncSidebarAria();
