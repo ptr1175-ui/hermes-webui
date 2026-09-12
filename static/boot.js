@@ -2454,6 +2454,12 @@ document.addEventListener('keydown',async e=>{
       return;
     }
   }
+  // Cmd/Ctrl+Shift+B toggles composer collapse (works from any focus).
+  if((e.metaKey||e.ctrlKey)&&e.shiftKey&&!e.altKey&&(e.key==='b'||e.key==='B')){
+    e.preventDefault();
+    if(typeof toggleComposer==='function')toggleComposer();
+    return;
+  }
   // Cmd/Ctrl+/ focuses the message composer without creating a chat.
   // Match on the '/' CHARACTER (e.key), not the physical key position: on QWERTZ
   // layouts the physical Slash key produces Ctrl+- (browser zoom-out) and '/' is
