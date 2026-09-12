@@ -6433,7 +6433,6 @@ main.main > #mainPlugin{display:none;}
 /* Composer collapse button — chevron-up in composer-right */
 #btnComposerCollapse{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border:none;border-radius:8px;background:transparent;color:var(--muted);cursor:pointer;flex-shrink:0;transition:color .12s,background .12s;}
 #btnComposerCollapse:hover{color:var(--text);background:var(--hover-bg);}
-.composer-compact #btnComposerCollapse,
 .composer-hidden #btnComposerCollapse{display:none!important;}
 
 @media(max-width:900px){
