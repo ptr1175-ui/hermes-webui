@@ -6416,10 +6416,17 @@ main.main > #mainPlugin{display:none;}
 .composer-compact .composer-box .cmd-dropdown{display:none!important;}
 .composer-compact .composer-box{padding:6px 12px;border:none;background:transparent;box-shadow:none;}
 .composer-compact #msg{border:1px solid var(--border);border-radius:8px;padding:8px 12px;background:var(--input-bg);font-size:13px;min-height:36px;}
+.composer-compact #btnComposerCollapse{display:none!important;}
 
 /* Level 2: composer-hidden — hide everything, show edge toggle */
 .composer-hidden .composer-wrap{display:none!important;}
 .composer-hidden .composer-edge-toggle{display:inline-flex;opacity:1;pointer-events:auto;}
+
+/* Composer collapse button — chevron-up in composer-right */
+#btnComposerCollapse{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border:none;border-radius:8px;background:transparent;color:var(--muted);cursor:pointer;flex-shrink:0;transition:color .12s,background .12s;}
+#btnComposerCollapse:hover{color:var(--text);background:var(--hover-bg);}
+.composer-compact #btnComposerCollapse,
+.composer-hidden #btnComposerCollapse{display:none!important;}
 
 @media(max-width:900px){
   .composer-edge-toggle{display:none!important;}

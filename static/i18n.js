@@ -1075,6 +1075,7 @@ const LOCALES = {
     tab_nocodb: 'NocoDB',
     sidebar_open: 'Open sidebar',
     composer_open: 'Show composer window',
+    composer_collapse: 'Collapse composer',
     tab_settings: 'Settings',
     close_menu: 'Close menu',
     new_conversation: 'New conversation',
