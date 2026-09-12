@@ -6405,11 +6405,10 @@ main.main > #mainPlugin{display:none;}
 .composer-edge-toggle{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);z-index:120;width:34px;height:34px;border:1px solid var(--border2);border-radius:999px;background:var(--surface);color:var(--muted);box-shadow:0 10px 28px rgba(0,0,0,.22);display:none;align-items:center;justify-content:center;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .18s ease,transform .18s ease,color .15s ease,background .15s ease,border-color .15s ease;}
 .composer-edge-toggle:hover{color:var(--text);background:var(--hover-bg);border-color:var(--accent);}
 
-/* Level 1: composer-compact — hide everything except textarea + send btn */
+/* Level 1: composer-compact — hide everything except textarea + right actions */
 .composer-compact .composer-flyout,
 .composer-compact #queuePill,
 .composer-compact .composer-selection-chips,
-.composer-compact .composer-footer,
 .composer-compact .composer-terminal-panel,
 .composer-compact #handoffHintContainer,
 .composer-compact #uploadBarWrap,
@@ -6417,10 +6416,15 @@ main.main > #mainPlugin{display:none;}
 .composer-compact .composer-box .attach-tray,
 .composer-compact .composer-box .mic-status,
 .composer-compact .composer-box .voice-mode-bar,
-.composer-compact .composer-box .cmd-dropdown{display:none!important;}
-.composer-compact .composer-box{padding:6px 12px;border:none;background:transparent;box-shadow:none;}
-.composer-compact #msg{border:1px solid var(--border);border-radius:8px;padding:8px 12px;background:var(--input-bg);font-size:13px;min-height:36px;}
-.composer-compact #btnComposerCollapse{display:none!important;}
+.composer-compact .composer-box .cmd-dropdown,
+.composer-compact .composer-left{display:none!important;}
+.composer-compact .composer-footer{display:flex!important;gap:4px;padding:4px 8px;border:none;background:transparent;}
+.composer-compact .composer-right{display:flex!important;gap:4px;}
+.composer-compact .composer-box{padding:4px 8px;border:none;background:transparent;box-shadow:none;display:flex;flex-direction:row;align-items:center;gap:6px;}
+.composer-compact #msg{border:1px solid var(--border);border-radius:8px;padding:6px 10px;background:var(--input-bg);font-size:13px;min-height:30px;flex:1;}
+.composer-compact .composer-footer .composer-right #btnComposerCollapse{display:inline-flex;}
+.composer-compact .composer-footer .composer-right #btnComposerCollapse svg{transform:rotate(180deg);}
+.composer-compact .send-btn{width:30px;height:30px;}
 
 /* Level 2: composer-hidden — hide everything, show edge toggle */
 .composer-hidden .composer-wrap{display:none!important;}
