@@ -1512,9 +1512,11 @@
     .pull-to-refresh-indicator .ptr-icon.ready{transform:rotate(180deg);color:var(--accent);}
     /* Reload and mobile new-chat titlebar controls with shared icon-button styles */
     .app-titlebar-new-chat,
-    .app-titlebar-reload{display:none;align-items:center;justify-content:center;width:32px;height:32px;flex-shrink:0;background:none;border:none;color:var(--muted);border-radius:8px;cursor:pointer;padding:0;-webkit-tap-highlight-color:transparent;transition:background-color .15s,color .15s;}
+    .app-titlebar-reload,
+    .app-titlebar-btn{display:none;align-items:center;justify-content:center;width:32px;height:32px;flex-shrink:0;background:none;border:none;color:var(--muted);border-radius:8px;cursor:pointer;padding:0;-webkit-tap-highlight-color:transparent;transition:background-color .15s,color .15s;}
     .app-titlebar-new-chat:hover,
-    .app-titlebar-reload:hover{background:var(--hover-bg);color:var(--text);}
+    .app-titlebar-reload:hover,
+    .app-titlebar-btn:hover{background:var(--hover-bg);color:var(--text);}
     @media (display-mode: standalone), (display-mode: fullscreen){
       :root{--app-titlebar-safe-top:env(safe-area-inset-top,0px);}
       .app-titlebar-reload{display:inline-flex;}
@@ -3064,7 +3066,7 @@
     /* Hamburger button (in app titlebar on mobile) */
     .app-titlebar{height:52px;justify-content:space-between;}
     .app-titlebar-hamburger,.app-titlebar-spacer{display:flex;}
-    .app-titlebar-new-chat,.app-titlebar-reload{display:inline-flex;width:44px;height:44px;}
+    .app-titlebar-new-chat,.app-titlebar-reload,.app-titlebar-btn{display:inline-flex;width:44px;height:44px;}
     .app-titlebar-inner{flex:1 1 auto;}
     .app-titlebar-title{max-width:72vw;}
     .app-titlebar-sub{font-size:9px;padding:1px 5px;}
@@ -3189,6 +3191,7 @@
     .app-titlebar-hamburger,
     .app-titlebar-new-chat,
     .app-titlebar-reload,
+    .app-titlebar-btn,
     .mobile-sidebar-close,
     .sidebar-nav .nav-tab,
     .icon-btn,
@@ -3196,6 +3199,7 @@
     .app-titlebar-hamburger svg,
     .app-titlebar-new-chat svg,
     .app-titlebar-reload svg,
+    .app-titlebar-btn svg,
     .mobile-sidebar-close svg,
     .sidebar-nav .nav-tab svg,
     .icon-btn svg,
