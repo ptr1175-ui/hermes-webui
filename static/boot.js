@@ -598,8 +598,10 @@ function toggleComposer(forceState){
 (function _restoreComposerState(){
   try{
     const v=localStorage.getItem(_COMPOSER_COLLAPSED_KEY);
-    if(v==='2')toggleComposer('hidden');
-    else if(v==='1')toggleComposer('compact');
+    if(v==='2'){
+      // Force back to full if hidden state is stale
+      localStorage.setItem(_COMPOSER_COLLAPSED_KEY,'0');
+    }
   }catch(_){}
 })();
 
