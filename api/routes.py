@@ -16659,8 +16659,6 @@ def handle_put(handler, parsed) -> bool:
                     p["label"] = label
                 if text:
                     p["text"] = text
-                    if not label:
-                        p["label"] = text[:60]
                 found = True
                 break
         if not found:

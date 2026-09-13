@@ -932,9 +932,6 @@ async function toggleSavedPromptsPopup(){
           try{
             await api('/api/prompts',{method:'PUT',body:JSON.stringify({id:p.id,text:newText})});
             p.text=newText;
-            const newLabel=newText.slice(0,60);
-            p.label=newLabel;
-            label.textContent=newLabel;
             label.title=newText;
             _savedPromptsCache=null;
             close();
